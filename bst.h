@@ -2,24 +2,40 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct value {
+    int number;
+} value;
+
 typedef struct node {
-    int val;
+    value value;
+    int height;
     struct node *left;
     struct node *right;
 } node;
 
-int is_tree_balanced(node *root);
-int tree_height(node *root);
-int tree_node_count(node *root);
+// vvv Edit these functions if cutom value struct
+int bst_compare(value a, value b);
+void bst_print_value(value value);
+// ^^^
 
-void balance_tree(node **root);
-void destroy_node(node **node);
-void destroy_tree(node **root);
-void insert(node **root, int value);
-void rotate_tree_left(node **root);
-void rotate_tree_right(node **root);
+int max(int a, int b);
 
-void print_tree(node *root);
-void print_tree_graphical(node *root);
-void print_tree_graphical_rec(node *root, int max_height,int level, int indent);
-void print_tree_node_rec(node *root, int level);
+value bst_get_biggest(node *root);
+int bst_get_height(node *root);
+int bst_get_node_balance(node *node);
+int bst_get_node_count(node *root);
+int bst_get_tree_balanced(node *root);
+
+void bst_balance_node(node **node);
+int bst_delete_val(node **root, value value);
+void bst_destroy_node(node **node);
+void bst_destroy_tree(node **root);
+int bst_insert(node **root, value value);
+void bst_rotate_left(node **root);
+void bst_rotate_right(node **root);
+
+void bst_print(node *root);
+void bst_print_graphical(node *root);
+void bst_print_graphical_rec(node *root, int max_height, int level, int indent);
+void bst_print_node(node *root);
+void bst_print_node_rec(node *root, int level);

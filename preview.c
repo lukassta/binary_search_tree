@@ -1,72 +1,84 @@
 #include "bst.h"
 
+value get_value(int input)
+{
+    value value;
+
+    value.number = input;
+
+    return value;
+}
+
 int main(int argc, char *argv[])
 {
     node *root = NULL;
 
-    printf("Unbalanced binary tree (if AUTO_BALANCING disabled)\n");
-    insert(&root, 4);
-    insert(&root, 2);
-    insert(&root, 1);
-    insert(&root, 3);
-    print_tree(root);
+    printf("PREVIEW OF BINARY SEARCH TREE LIBRARY\n\n");
 
-    printf("Balanced binary tree\n");
-    destroy_tree(&root);
-    insert(&root, 8);
-    insert(&root, 4);
-    insert(&root, 12);
-    insert(&root, 2);
-    insert(&root, 6);
-    insert(&root, 10);
-    insert(&root, 14);
-    insert(&root, 1);
-    insert(&root, 3);
-    insert(&root, 5);
-    insert(&root, 7);
-    insert(&root, 9);
-    insert(&root, 11);
-    insert(&root, 13);
-    insert(&root, 15);
-    print_tree(root);
+    printf("Empty binary search tree:\n");
+    bst_print(root);
 
-    printf("Balanced binary tree, with larger numbers \n");
-    destroy_tree(&root);
-    insert(&root, 104);
-    insert(&root, 102);
-    insert(&root, 106);
-    insert(&root, 101);
-    insert(&root, 103);
-    insert(&root, 105);
-    insert(&root, 107);
-    print_tree(root);
+    printf("Unbalanced binary search tree (if AUTO_BALANCING disabled):\n");
+    bst_insert(&root, get_value(8));
+    bst_insert(&root, get_value(2));
+    bst_insert(&root, get_value(1));
+    bst_insert(&root, get_value(3));
+    bst_insert(&root, get_value(4));
+    bst_insert(&root, get_value(5));
+    bst_print(root);
 
-    printf("Large binary tree (if AUTO_BALANCING enabled)\n");
-    destroy_tree(&root);
-    for(int i = 1; i < 64; ++i)
+    printf("Balanced binary search tree:\n");
+    bst_destroy_tree(&root);
+    bst_insert(&root, get_value(8));
+    bst_insert(&root, get_value(4));
+    bst_insert(&root, get_value(12));
+    bst_insert(&root, get_value(2));
+    bst_insert(&root, get_value(6));
+    bst_insert(&root, get_value(10));
+    bst_insert(&root, get_value(14));
+    bst_insert(&root, get_value(1));
+    bst_insert(&root, get_value(3));
+    bst_insert(&root, get_value(5));
+    bst_insert(&root, get_value(7));
+    bst_insert(&root, get_value(9));
+    bst_insert(&root, get_value(11));
+    bst_insert(&root, get_value(13));
+    bst_insert(&root, get_value(15));
+    bst_print(root);
+
+    printf("Balanced binary search tree, with larger numbers:\n");
+    bst_destroy_tree(&root);
+    bst_insert(&root, get_value(100004));
+    bst_insert(&root, get_value(100002));
+    bst_insert(&root, get_value(100006));
+    bst_insert(&root, get_value(100001));
+    bst_insert(&root, get_value(100003));
+    bst_insert(&root, get_value(100005));
+    bst_insert(&root, get_value(100007));
+    bst_print(root);
+
+    printf("Large binary search tree (if AUTO_BALANCING enabled):\n");
+    bst_destroy_tree(&root);
+    for(int i = 1; i < 32; ++i)
     {
-        insert(&root, i);
+        bst_insert(&root, get_value(i));
     }
-    if(is_tree_balanced(root) != -1)
-    {
-        print_tree(root);
-    }
+    bst_print(root);
 
-    printf("Binary tree with duplicated (if ALLOW_DUPLICATES enabled)\n");
-    destroy_tree(&root);
-    for(int i = 9; i > 0; --i)
+    printf("Binary search tree with duplicated values (if ALLOW_DUPLICATES enabled):\n");
+    bst_destroy_tree(&root);
+    for(int i = 1; i < 9; ++i)
     {
-        insert(&root, i);
+        bst_insert(&root, get_value(i));
         if(i == 5)
         {
-            insert(&root, i);
-            insert(&root, i);
-            insert(&root, i);
-            insert(&root, i);
-            insert(&root, i);
+            for(int j = 0; j < 6; ++j)
+            {
+                bst_insert(&root, get_value(i));
+            }
         }
     }
-    print_tree(root);
+    bst_print(root);
 
     return 0;
 }
