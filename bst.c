@@ -1,20 +1,21 @@
-// Lukas Stavari LSP 2414004
+// Lukas Stavaris LSP 2414004
 // Program: PS, Course: 1, Group: 4
-// Query 18
+// Binary search tree library for c programming language
 //----------------------------
 
 #include "bst.h"
 
 
 static char ANSI_COLOR_RESET[] = "\x1b[0m";
-static char ANSI_COLOR_GREEN[] = "\x1b[32m";
-static char ANSI_COLOR_RED[] = "\x1b[31m";
+static char ANSI_COLOR_GREEN[] = "\x1b[32m"; static char ANSI_COLOR_RED[] = "\x1b[31m";
 
-//== If custom value struct edit here =========
+
+//== Edit here ================================
+//-- Settings ---------------------------------
 // 0 - disabled
 // 1 - enabled
 static int ALLOW_DUPLICATES = 1;
-static int AUTO_BALANCE = 1;
+static int AUTO_BALANCE = 0;
 
 
 // 0 - disabled
@@ -26,8 +27,19 @@ static int MAX_NODE_VIEW = 64;
 // 0< - max allowed levels
 static int MAX_GRAPH_VIEW = 5;
 
+// 0 - disabled
+// 0< - max allowed rows
+static int MAX_LIST_VIEW = 64;
+//---------------------------------------------
 
-int bst_compare(value a, value b)
+
+//-- Custom value struct adaptation -----------
+// Edit these two functions if you define a
+// custom value struct. These are the only
+// two functions that interface with the
+// value struct.
+
+int bst_compare(BstValue a, BstValue b)
 {
     // O(1)
     // Precondition:
@@ -55,7 +67,7 @@ int bst_compare(value a, value b)
 }
 
 
-void bst_print_value(value value)
+void bst_print_value(BstValue value)
 {
     // O(1)
     // Precondition:
@@ -72,27 +84,8 @@ void bst_print_value(value value)
 //=============================================
 
 
-int max(int a, int b)
-{
-    // O(1)
-    // Precondition:
-
-    // Postcondition:
-    // * Returns a value if a is larger than b
-    // * Returns b value if a is larger than a
-
-    if(b < a)
-    {
-        return a;
-    }
-    else
-    {
-        return b;
-    }
-}
-
-
-value bst_get_most_right(node *root)
+// Data getting functions
+BstValue bst_get_most_right(BstNode *root)
 {
     // O(log(n))
     // Precondition:
@@ -101,7 +94,7 @@ value bst_get_most_right(node *root)
     // * Returns 0 if node is null
     // * Returns most right value if node is not null
 
-    value none;
+    BstValue none;
 
     if(root == NULL)
     {
@@ -119,7 +112,7 @@ value bst_get_most_right(node *root)
 }
 
 
-int bst_get_height(node *node)
+int bst_get_height(BstNode *node)
 {
     // O(1)
     // Precondition:
@@ -139,7 +132,7 @@ int bst_get_height(node *node)
 }
 
 
-int bst_get_node_balance(node *node)
+int bst_get_node_balance(BstNode *node)
 {
     // O(1)
     // Precondition:
@@ -151,7 +144,7 @@ int bst_get_node_balance(node *node)
 }
 
 
-int bst_get_node_count(node *root)
+int bst_get_node_count(BstNode *root)
 {
     // O(n)
     // Precondition:
@@ -173,7 +166,7 @@ int bst_get_node_count(node *root)
 }
 
 
-int bst_get_tree_balance(node *root)
+int bst_get_tree_balance(BstNode *root)
 {
     // O(n)
     // Precondition:
@@ -213,7 +206,98 @@ int bst_get_tree_balance(node *root)
 }
 
 
-void bst_balance_node(node **node)
+int max(int a, int b)
+{
+    // O(1)
+    // Precondition:
+
+    // Postcondition:
+    // * Returns a value if a is larger than b
+    // * Returns b value if a is larger than a
+
+    if(b < a)
+    {
+        return a;
+    }
+    else
+    {
+        return b;
+    }
+}
+
+
+// Data altering functions functions
+void bst_array_to_tree(BstNode **root, BstValue *value_array, int left_p, int right_p)
+{
+    // O(n)
+
+    // Precondition:
+    // Value array is sorted
+
+    // Postcondition:
+    // Binary search tree is balanced
+
+    int middle;
+
+    if(left_p + 1 >= right_p)
+    {
+        bst_insert(root, value_array[left_p]);
+
+        return;
+    }
+
+    middle = (left_p + right_p) / 2;
+
+    bst_insert(root, value_array[middle]);
+
+    bst_array_to_tree(root, value_array, left_p, middle - 1);
+
+    bst_array_to_tree(root, value_array, middle + 1, right_p);
+
+    return;
+}
+
+
+void bst_balance_tree(BstNode **root)
+{
+    // NOTE: if AUTO_BLANCING is enabled
+    // complexity is O(n * n), thus
+    // one should not use this fucntion
+    // if AUTO_BALNACING is enabled
+
+    // O(n)
+    // Precondition:
+    // Input tree is a binary search tree
+
+    // Postcondition:
+    // Root pointer is changed
+    // Binary search tree is balanced
+
+    int tree_node_count, left_p;
+    BstValue *value_array;
+
+    tree_node_count = bst_get_node_count(*root);
+    left_p = 0;
+    value_array = (BstValue *) malloc(sizeof(BstValue) * tree_node_count);
+
+    bst_tree_to_array(*root, value_array, &left_p);
+
+    bst_destroy_tree(root);
+
+    for(int i = 0; i < tree_node_count; i++)
+    {
+        printf("%d ", value_array[i].number);
+    }
+
+    bst_array_to_tree(root, value_array, 0, tree_node_count - 1);
+
+    free(value_array);
+
+    return;
+}
+
+
+void bst_balance_node(BstNode **node)
 {
     // O(1)
     // Precondition:
@@ -248,7 +332,7 @@ void bst_balance_node(node **node)
 }
 
 
-int bst_delete_val(node **root, value value)
+int bst_delete_value(BstNode **root, BstValue value)
 {
     // O(log(n))
     // Precondition:
@@ -258,7 +342,7 @@ int bst_delete_val(node **root, value value)
     // * Returns 1 if value is not found
     // * If duplicated values exist only one value is deleted
 
-    node *temp;
+    BstNode *temp;
     int error, compare;
 
     if(*root == NULL)
@@ -270,11 +354,7 @@ int bst_delete_val(node **root, value value)
 
     if(compare == -1)
     {
-        error = bst_delete_val(&(*root)->left, value);
-    }
-    else if(compare == 1)
-    {
-        error = bst_delete_val(&(*root)->right, value);
+        error = bst_delete_value(&(*root)->left, value);
     }
     else if(compare == 0)
     {
@@ -297,7 +377,11 @@ int bst_delete_val(node **root, value value)
 
         (*root)->value = bst_get_most_right((*root)->left);
 
-        error = bst_delete_val(&(*root)->left, (*root)->value);
+        error = bst_delete_value(&(*root)->left, (*root)->value);
+    }
+    else if(compare == 1)
+    {
+        error = bst_delete_value(&(*root)->right, value);
     }
 
     if(error)
@@ -316,7 +400,7 @@ int bst_delete_val(node **root, value value)
 }
 
 
-void bst_destroy_node(node **node)
+void bst_destroy_node(BstNode **node)
 {
     // O(1)
     // Precondition:
@@ -333,7 +417,7 @@ void bst_destroy_node(node **node)
 }
 
 
-void bst_destroy_tree(node **root)
+void bst_destroy_tree(BstNode **root)
 {
     // O(n)
     // Precondition:
@@ -356,7 +440,7 @@ void bst_destroy_tree(node **root)
 }
 
 
-int bst_insert(node **root, value value)
+int bst_insert(BstNode **root, BstValue value)
 {
     // O(log(n))
     // Precondition:
@@ -368,12 +452,12 @@ int bst_insert(node **root, value value)
     // * Returns 1 if no space left in memory
     // * Returns 2 if value already exists (if duplictes are not enabled)
 
-    node *new_node;
+    BstNode *new_node;
     int error, compare;
 
     if(*root == NULL)
     {
-        new_node = (node *) malloc(sizeof(node));
+       new_node = (BstNode *) malloc(sizeof(BstNode));
 
         if(new_node == NULL)
         {
@@ -396,10 +480,6 @@ int bst_insert(node **root, value value)
     {
         error = bst_insert(&(*root)->left, value);
     }
-    else if(compare == 1)
-    {
-        error = bst_insert(&(*root)->right, value);
-    }
     else if(compare == 0)
     {
         if(ALLOW_DUPLICATES)
@@ -410,6 +490,10 @@ int bst_insert(node **root, value value)
         {
             return 2;
         }
+    }
+    else if(compare == 1)
+    {
+        error = bst_insert(&(*root)->right, value);
     }
 
     if(error)
@@ -428,7 +512,7 @@ int bst_insert(node **root, value value)
 }
 
 
-void bst_rotate_left(node **root)
+void bst_rotate_left(BstNode **node)
 {
     // O(1)
 
@@ -439,26 +523,26 @@ void bst_rotate_left(node **root)
 
     // Postcondition:
 
-    node *temp;
+    BstNode *temp;
 
-    if(*root == NULL || (*root)->right == NULL)
+    if(*node == NULL || (*node)->right == NULL)
     {
         return;
     }
 
-    temp = *root;
-    *root = (*root)->right;
-    temp->right = (*root)->left;
-    (*root)->left = temp;
+    temp = *node;
+    *node= (*node)->right;
+    temp->right = (*node)->left;
+    (*node)->left = temp;
 
-    (*root)->left->height = max(bst_get_height((*root)->left->left), bst_get_height((*root)->left->right)) + 1;
-    (*root)->height = max(bst_get_height((*root)->left), bst_get_height((*root)->right)) + 1;
+    (*node)->left->height = max(bst_get_height((*node)->left->left), bst_get_height((*node)->left->right)) + 1;
+    (*node)->height = max(bst_get_height((*node)->left), bst_get_height((*node)->right)) + 1;
 
     return;
 }
 
 
-void bst_rotate_right(node **root)
+void bst_rotate_right(BstNode **node)
 {
     // O(1)
 
@@ -469,26 +553,54 @@ void bst_rotate_right(node **root)
 
     // Postcondition:
 
-    node *temp;
+    BstNode *temp;
 
-    if(*root == NULL || (*root)->left == NULL)
+    if(*node == NULL || (*node)->left == NULL)
     {
         return;
     }
 
-    temp = *root;
-    *root = (*root)->left;
-    temp->left = (*root)->right;
-    (*root)->right = temp;
+    temp = *node;
+    *node = (*node)->left;
+    temp->left = (*node)->right;
+    (*node)->right = temp;
 
-    (*root)->right->height = max(bst_get_height((*root)->right->left), bst_get_height((*root)->right->right)) + 1;
-    (*root)->height = max(bst_get_height((*root)->left), bst_get_height((*root)->right)) + 1;
+    (*node)->right->height = max(bst_get_height((*node)->right->left), bst_get_height((*node)->right->right)) + 1;
+    (*node)->height = max(bst_get_height((*node)->left), bst_get_height((*node)->right)) + 1;
 
     return;
 }
 
 
-void bst_print(node *root)
+void bst_tree_to_array(BstNode *root, BstValue *value_array, int *left_p)
+{
+    // O(n)
+    // Precondition:
+    // Value array size is not smaller than tree node count
+
+    // Postcondition:
+    // Tree node values are writen to value_array in the 
+    // order that they were originally in the tree
+
+    if(root->left != NULL)
+    {
+        bst_tree_to_array(root->left, value_array, left_p);
+    }
+
+    value_array[*left_p] = root->value;
+    ++*left_p;
+
+    if(root->right != NULL)
+    {
+        bst_tree_to_array(root->right, value_array, left_p);
+    }
+
+    return;
+}
+
+
+// Outputing to console functions
+void bst_print(BstNode *root)
 {
     // O(n)
 
@@ -499,7 +611,10 @@ void bst_print(node *root)
 
     // Postcondition:
 
+    int node_count;
+
     printf("==============================\n");
+
 
     printf("Node count: %d\n", bst_get_node_count(root));
     printf("Height: %d\n", bst_get_height(root));
@@ -529,9 +644,9 @@ void bst_print(node *root)
 }
 
 
-void bst_print_graphical(node *root)
+void bst_print_graphical(BstNode *root)
 {
-    // O(n)
+    // O(n log(n))
 
     // Precondition:
     // * Max. binary tree height of 6
@@ -570,9 +685,9 @@ void bst_print_graphical(node *root)
 }
 
 
-void bst_print_graphical_rec(node *root, int max_height,int level, int indent)
+void bst_print_graphical_rec(BstNode *root, int max_height, int level, int indent)
 {
-    // O(n)
+    // O(n log(n))
 
     // Precondition:
     // * Max. binary tree height of 6
@@ -653,7 +768,7 @@ void bst_print_graphical_rec(node *root, int max_height,int level, int indent)
 }
 
 
-void bst_print_node(node *root)
+void bst_print_node(BstNode *root)
 {
     // O(n)
 
@@ -689,7 +804,7 @@ void bst_print_node(node *root)
 }
 
 
-void bst_print_node_rec(node *root, int level)
+void bst_print_node_rec(BstNode *root, int level)
 {
     // O(n)
 

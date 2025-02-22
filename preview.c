@@ -1,8 +1,8 @@
 #include "bst.h"
 
-value get_value(int input)
+BstValue get_value(int input)
 {
-    value value;
+    BstValue value;
 
     value.number = input;
 
@@ -11,7 +11,7 @@ value get_value(int input)
 
 int main(int argc, char *argv[])
 {
-    node *root = NULL;
+    BstNode *root = NULL;
 
     printf("PREVIEW OF BINARY SEARCH TREE LIBRARY\n\n");
 
@@ -20,11 +20,17 @@ int main(int argc, char *argv[])
 
     printf("Unbalanced binary search tree (if AUTO_BALANCING disabled):\n");
     bst_insert(&root, get_value(8));
+    bst_insert(&root, get_value(3));
     bst_insert(&root, get_value(2));
     bst_insert(&root, get_value(1));
-    bst_insert(&root, get_value(3));
+    bst_insert(&root, get_value(0));
     bst_insert(&root, get_value(4));
     bst_insert(&root, get_value(5));
+    bst_insert(&root, get_value(6));
+    bst_print(root);
+
+    printf("Unbalanced binary search tree after balancing:\n");
+    bst_balance_tree(&root);
     bst_print(root);
 
     printf("Balanced binary search tree:\n");
@@ -67,17 +73,24 @@ int main(int argc, char *argv[])
 
     printf("Binary search tree with duplicated values (if ALLOW_DUPLICATES enabled):\n");
     bst_destroy_tree(&root);
-    for(int i = 1; i < 9; ++i)
-    {
-        bst_insert(&root, get_value(i));
-        if(i == 5)
-        {
-            for(int j = 0; j < 6; ++j)
-            {
-                bst_insert(&root, get_value(i));
-            }
-        }
-    }
+    /*for(int j = 0; j < 4; ++j)*/
+    /*{*/
+    /*    bst_insert(&root, get_value(5));*/
+    /*}*/
+    bst_insert(&root, get_value(8));
+    bst_insert(&root, get_value(4));
+    bst_insert(&root, get_value(8));
+    bst_insert(&root, get_value(8));
+    bst_insert(&root, get_value(2));
+    bst_insert(&root, get_value(1));
+    bst_insert(&root, get_value(3));
+    bst_insert(&root, get_value(12));
+    bst_insert(&root, get_value(10));
+    bst_insert(&root, get_value(9));
+    bst_insert(&root, get_value(11));
+    bst_insert(&root, get_value(14));
+    bst_insert(&root, get_value(13));
+    bst_insert(&root, get_value(15));
     bst_print(root);
 
     return 0;

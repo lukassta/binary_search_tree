@@ -1,41 +1,46 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-typedef struct value {
+typedef struct BstValue {
     int number;
-} value;
+} BstValue;
 
-typedef struct node {
-    value value;
+typedef struct BstNode {
+    BstValue value;
     int height;
-    struct node *left;
-    struct node *right;
-} node;
+    struct BstNode *left;
+    struct BstNode *right;
+} BstNode;
 
 // vvv Edit these functions if cutom value struct
-int bst_compare(value a, value b);
-void bst_print_value(value value);
+int bst_compare(BstValue a, BstValue b);
+void bst_print_value(BstValue value);
 // ^^^
 
+
+// Data getting functions
+BstValue bst_get_most_right(BstNode *root);
+int bst_get_height(BstNode *node);
+int bst_get_node_balance(BstNode *node);
+int bst_get_node_count(BstNode *root);
+int bst_get_tree_balanced(BstNode *root);
 int max(int a, int b);
 
-value bst_get_biggest(node *root);
-int bst_get_height(node *root);
-int bst_get_node_balance(node *node);
-int bst_get_node_count(node *root);
-int bst_get_tree_balanced(node *root);
+// Data altering functions functions
+void bst_array_to_tree(BstNode **root, BstValue *value_array, int left_p, int right_p);
+void bst_balance_tree(BstNode **root);
+void bst_balance_node(BstNode **node);
+int bst_delete_value(BstNode **root, BstValue value);
+void bst_destroy_node(BstNode **node);
+void bst_destroy_tree(BstNode **root);
+int bst_insert(BstNode **root, BstValue value);
+void bst_rotate_left(BstNode **node);
+void bst_rotate_right(BstNode **node);
+void bst_tree_to_array(BstNode *root, BstValue *value_array, int *left_p);
 
-void bst_balance_node(node **node);
-int bst_delete_val(node **root, value value);
-void bst_destroy_node(node **node);
-void bst_destroy_tree(node **root);
-int bst_insert(node **root, value value);
-void bst_rotate_left(node **root);
-void bst_rotate_right(node **root);
-
-void bst_print(node *root);
-void bst_print_graphical(node *root);
-void bst_print_graphical_rec(node *root, int max_height, int level, int indent);
-void bst_print_node(node *root);
-void bst_print_node_rec(node *root, int level);
+// Outputing to console functions
+void bst_print(BstNode *root);
+void bst_print_graphical(BstNode *root);
+void bst_print_graphical_rec(BstNode *root, int max_height, int level, int indent);
+void bst_print_node(BstNode *root);
+void bst_print_node_rec(BstNode *root, int level);
