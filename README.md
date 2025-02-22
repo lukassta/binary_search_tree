@@ -9,6 +9,21 @@
 ```
 This library provides functions for basic binary search tree functionality.
 
+## Usage
+> Note: These examples work for linux, if you use windows tweak the compiler and execution commands.
+
+To run the library preview
+```bash
+$ gcc preview.c bst.c -o bst_preview
+$ ./bst_preview
+```
+
+To use with yout code
+```bash
+$ gcc your_code.c bst.c -o your_code
+$ ./your_cose
+```
+
 ## Documentation
 ### Structs
 typedef struct BstValue {
