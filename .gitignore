@@ -1,4 +1,8 @@
 **
 !/**/
 !*.*
+*.o
 *.exe
+*.preview
+*.plist
+LFF.doc
