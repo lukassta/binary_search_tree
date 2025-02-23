@@ -15,7 +15,7 @@ static char ANSI_COLOR_GREEN[] = "\x1b[32m"; static char ANSI_COLOR_RED[] = "\x1
 // 0 - disabled
 // 1 - enabled
 static int ALLOW_DUPLICATES = 1;
-static int AUTO_BALANCE = 0;
+static int AUTO_BALANCE = 1;
 
 
 // 0 - disabled
@@ -26,10 +26,6 @@ static int MAX_NODE_VIEW = 64;
 // 0 - disabled
 // 0< - max allowed levels
 static int MAX_GRAPH_VIEW = 5;
-
-// 0 - disabled
-// 0< - max allowed rows
-static int MAX_LIST_VIEW = 64;
 //---------------------------------------------
 
 
@@ -138,7 +134,13 @@ int bst_get_node_balance(BstNode *node)
     // Precondition:
 
     // Postcondition:
+    // * Returns 0 if node is null
     // * Returns balance of node
+
+    if(node == NULL)
+    {
+        return 0;
+    }
 
     return bst_get_height(node->left) - bst_get_height(node->right);
 }
@@ -239,14 +241,17 @@ void bst_array_to_tree(BstNode **root, BstValue *value_array, int left_p, int ri
 
     int middle;
 
-    if(left_p + 1 >= right_p)
+    if(left_p < 0)
     {
-        bst_insert(root, value_array[left_p]);
-
         return;
     }
 
-    middle = (left_p + right_p) / 2;
+    if(left_p > right_p)
+    {
+        return;
+    }
+
+    middle = left_p + (right_p - left_p) / 2;
 
     bst_insert(root, value_array[middle]);
 
@@ -277,8 +282,14 @@ void bst_balance_tree(BstNode **root)
     BstValue *value_array;
 
     tree_node_count = bst_get_node_count(*root);
+
+    if(tree_node_count == 0)
+    {
+        return;
+    }
+
     left_p = 0;
-    value_array = (BstValue *) malloc(sizeof(BstValue) * tree_node_count);
+    value_array = (BstValue *) malloc(sizeof(BstValue) * (unsigned int)tree_node_count);
 
     bst_tree_to_array(*root, value_array, &left_p);
 
@@ -340,6 +351,7 @@ int bst_delete_value(BstNode **root, BstValue value)
     // Postcondition:
     // * Returns 0 if success
     // * Returns 1 if value is not found
+    // * Returns 2 if comparison has failed
     // * If duplicated values exist only one value is deleted
 
     BstNode *temp;
@@ -382,6 +394,10 @@ int bst_delete_value(BstNode **root, BstValue value)
     else if(compare == 1)
     {
         error = bst_delete_value(&(*root)->right, value);
+    }
+    else
+    {
+        error = 2;
     }
 
     if(error)
@@ -450,7 +466,8 @@ int bst_insert(BstNode **root, BstValue value)
     // * Binary tree is balanced
     // * Returns 0 if success
     // * Returns 1 if no space left in memory
-    // * Returns 2 if value already exists (if duplictes are not enabled)
+    // * Returns 2 comparison has failed
+    // * Returns 3 if value already exists (if duplictes are not enabled)
 
     BstNode *new_node;
     int error, compare;
@@ -488,12 +505,16 @@ int bst_insert(BstNode **root, BstValue value)
         }
         else
         {
-            return 2;
+            return 3;
         }
     }
     else if(compare == 1)
     {
         error = bst_insert(&(*root)->right, value);
+    }
+    else
+    {
+        error = 2;
     }
 
     if(error)
@@ -582,18 +603,17 @@ void bst_tree_to_array(BstNode *root, BstValue *value_array, int *left_p)
     // Tree node values are writen to value_array in the 
     // order that they were originally in the tree
 
-    if(root->left != NULL)
+    if(root == NULL)
     {
-        bst_tree_to_array(root->left, value_array, left_p);
+        return;
     }
+
+    bst_tree_to_array(root->left, value_array, left_p);
 
     value_array[*left_p] = root->value;
     ++*left_p;
 
-    if(root->right != NULL)
-    {
-        bst_tree_to_array(root->right, value_array, left_p);
-    }
+    bst_tree_to_array(root->right, value_array, left_p);
 
     return;
 }
@@ -610,8 +630,6 @@ void bst_print(BstNode *root)
     // min. lenght 1
 
     // Postcondition:
-
-    int node_count;
 
     printf("==============================\n");
 

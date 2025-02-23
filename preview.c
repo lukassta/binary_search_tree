@@ -9,7 +9,7 @@ BstValue get_value(int input)
     return value;
 }
 
-int main(int argc, char *argv[])
+int main(void)
 {
     BstNode *root = NULL;
 
@@ -73,10 +73,6 @@ int main(int argc, char *argv[])
 
     printf("Binary search tree with duplicated values (if ALLOW_DUPLICATES enabled):\n");
     bst_destroy_tree(&root);
-    /*for(int j = 0; j < 4; ++j)*/
-    /*{*/
-    /*    bst_insert(&root, get_value(5));*/
-    /*}*/
     bst_insert(&root, get_value(8));
     bst_insert(&root, get_value(4));
     bst_insert(&root, get_value(8));
