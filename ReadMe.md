@@ -49,6 +49,9 @@ Returns -1 if first argument is prefered over the second
 Returns 0 if arguments are equal
 Returns 1 if second argument is prefered over the first
 
+BstValue get_value(int input)
+> Initialized a BstValue struct with the desired values
+
 void bst_print_value(BstValue value);
 > Defines how a value struct is printed
 

@@ -63,6 +63,24 @@ int bst_compare(BstValue a, BstValue b)
 }
 
 
+BstValue get_value(int input)
+{
+    // O(1)
+    // Precondition:
+    // * This function is adapdted
+    // if custom value struct is used
+
+    // Postcondition:
+    // * Returns initialized BstValue
+
+    BstValue value;
+
+    value.number = input;
+
+    return value;
+}
+
+
 void bst_print_value(BstValue value)
 {
     // O(1)

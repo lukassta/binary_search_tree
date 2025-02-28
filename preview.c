@@ -1,19 +1,10 @@
 #include "bst.h"
 
-BstValue get_value(int input)
-{
-    BstValue value;
-
-    value.number = input;
-
-    return value;
-}
-
 int main(void)
 {
     BstNode *root = NULL;
 
-    printf("PREVIEW OF BINARY SEARCH TREE LIBRARY\n\n");
+    printf("PREVIEW OF BINARY SEARCH TREE (BST) LIBRARY\n\n");
 
     printf("Empty binary search tree:\n");
     bst_print(root);

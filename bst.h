@@ -14,6 +14,7 @@ typedef struct BstNode {
 
 // vvv Edit these functions if cutom value struct
 int bst_compare(BstValue a, BstValue b);
+BstValue get_value(int input);
 void bst_print_value(BstValue value);
 // ^^^
 
